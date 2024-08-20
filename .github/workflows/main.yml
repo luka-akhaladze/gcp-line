@@ -4,38 +4,37 @@ on:
   push:
     branches:
       - main
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-    
+
     - name: Set up Google Cloud SDK
       uses: google-github-actions/setup-gcloud@v1
       with:
         version: 'latest'
-        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        project_id: interns-417211
         service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
-    
-    - name: Configure Docker authentication
+
+    - name: Configure Docker to use the gcloud command-line tool as a credential helper
       run: |
-        gcloud auth configure-docker gcr.io
-    
+        gcloud auth configure-docker
+
     - name: Build Docker image
       run: |
-        docker build -t gcr.io/interns-417211/${{ secrets.IMAGE_NAME }}:${{ github.sha }} .
-    
+        docker build -t gcr.io/interns-417211/lukas-front-end .
+
     - name: Push Docker image to Google Container Registry
       run: |
-        docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.IMAGE_NAME }}:${{ github.sha }}
-    
+        docker push gcr.io/interns-417211/lukas-front-end
+
     - name: Deploy to Cloud Run
       run: |
         gcloud run deploy ${{ secrets.IMAGE_NAME }} \
-          --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.IMAGE_NAME }}:${{ github.sha }} \
+          --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.IMAGE_NAME }} \
           --region ${{ secrets.GCP_REGION }} \
           --platform managed \
           --allow-unauthenticated

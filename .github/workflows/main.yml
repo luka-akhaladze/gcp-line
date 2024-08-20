@@ -25,16 +25,16 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t gcr.io/interns-417211/lukas-front-end:$GITHUB_SHA .
+        docker build -t gcr.io/interns-417211/lukas-front-end .
 
     - name: Push Docker image to Google Container Registry
       run: |
-        docker push gcr.io/interns-417211/lukas-front-end:$GITHUB_SHA
+        docker push gcr.io/interns-417211/lukas-front-end
 
     - name: Deploy to Cloud Run
       run: |
         gcloud run deploy ${{ secrets.IMAGE_NAME }} \
-          --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.IMAGE_NAME }}:$GITHUB_SHA \
+          --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.IMAGE_NAME }} \
           --region ${{ secrets.GCP_REGION }} \
           --platform managed \
           --allow-unauthenticated

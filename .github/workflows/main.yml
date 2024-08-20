@@ -26,7 +26,7 @@ jobs:
     
     - name: Build Docker image
       run: |
-        docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.IMAGE_NAME }}:${{ github.sha }} .
+        docker build -t gcr.io/interns-417211/${{ secrets.IMAGE_NAME }}:${{ github.sha }} .
     
     - name: Push Docker image to Google Container Registry
       run: |
